@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Concierge — Development Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Outfit:wght@200;300;400;500&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --bg: #080A0C;
+    --bg2: #0D0F12;
+    --bg3: #121519;
+    --surface: rgba(255,255,255,0.03);
+    --border: rgba(201,168,76,0.2);
+    --text: #E8E4DC;
+    --text-dim: rgba(232,228,220,0.5);
+    --text-muted: rgba(232,228,220,0.3);
+    --phase1: #C9A84C;
+    --phase2: #7B9EA8;
+    --phase3: #8FAF7C;
+    --phase4: #A87CB0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    body { cursor: none; }
+  }
+
+  /* Custom cursor — desktop only */
+  .cursor, .cursor-ring {
+    display: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .cursor {
+      display: block;
+      position: fixed; width: 8px; height: 8px;
+      background: var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transition: transform 0.15s ease;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      display: block;
+      position: fixed; width: 32px; height: 32px;
+      border: 1px solid rgba(201,168,76,0.5); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transition: all 0.3s ease;
+    }
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1; opacity: 0.4;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    position: relative; overflow: hidden;
+    text-align: center; padding: 80px 40px;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 120%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 20% 50%, rgba(123,158,168,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 80% 20%, rgba(168,124,176,0.04) 0%, transparent 50%);
+  }
+
+  .hero-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 300;
+    letter-spacing: 0.3em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 32px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 8vw, 108px);
+    font-weight: 300; line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic; color: var(--gold);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: 300; font-style: italic;
+    color: var(--text-dim); margin-top: 24px; margin-bottom: 48px;
+    max-width: 560px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-stats {
+    display: flex; gap: 60px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px; font-weight: 300; color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.25em;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .hero-scroll {
+    position: absolute; bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    opacity: 0; animation: fadeUp 0.8s ease 1.2s forwards;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(var(--gold), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  /* ── SECTION SHARED ── */
+  section { position: relative; z-index: 2; }
+
+  .section-header {
+    text-align: center; padding: 100px 40px 60px;
+  }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.35em;
+    color: var(--gold); text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300; letter-spacing: -0.01em;
+  }
+
+  /* ── VISION STRIP ── */
+  .vision-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 0;
+    overflow: hidden;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.03), transparent);
+  }
+
+  .vision-ticker {
+    display: flex; gap: 0;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+
+  .vision-item {
+    display: flex; align-items: center; gap: 32px;
+    padding: 0 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-style: italic;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .vision-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+
+  /* ── PHASES GRID ── */
+  .phases {
+    padding: 0 40px 120px;
+    max-width: 1400px; margin: 0 auto;
+  }
+
+  .phases-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+
+  .phase-card {
+    background: var(--bg2);
+    padding: 52px 48px;
+    position: relative; overflow: hidden;
+    transition: all 0.5s ease;
+    cursor: default;
+  }
+
+  .phase-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--phase-color, var(--gold));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .phase-card:hover::before { opacity: 0.04; }
+
+  .phase-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--phase-color, var(--gold)), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.5s ease;
+  }
+
+  .phase-card:hover::after { transform: scaleX(1); }
+
+  .phase-card:nth-child(1) { --phase-color: var(--phase1); }
+  .phase-card:nth-child(2) { --phase-color: var(--phase2); }
+  .phase-card:nth-child(3) { --phase-color: var(--phase3); }
+  .phase-card:nth-child(4) { --phase-color: var(--phase4); }
+
+  .phase-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 120px; font-weight: 300;
+    color: var(--phase-color, var(--gold));
+    opacity: 0.08; line-height: 1;
+    position: absolute; top: 20px; right: 32px;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .phase-card:hover .phase-number { opacity: 0.14; }
+
+  .phase-meta {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .phase-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--phase-color, var(--gold));
+    border: 1px solid currentColor;
+    padding: 4px 10px; border-radius: 2px;
+    opacity: 0.8;
+  }
+
+  .phase-timeline {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em;
+    color: var(--text-muted);
+  }
+
+  .phase-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 300;
+    line-height: 1.1; margin-bottom: 12px;
+  }
+
+  .phase-objective {
+    font-size: 14px; color: var(--text-dim);
+    line-height: 1.7; margin-bottom: 36px;
+    max-width: 420px;
+  }
+
+  .phase-capabilities {
+    margin-bottom: 36px;
+  }
+
+  .cap-group { margin-bottom: 24px; }
+
+  .cap-group-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--phase-color, var(--gold));
+    margin-bottom: 12px; opacity: 0.7;
+  }
+
+  .cap-list {
+    list-style: none; display: flex;
+    flex-direction: column; gap: 8px;
+  }
+
+  .cap-list li {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 13px; color: var(--text-dim); line-height: 1.5;
+  }
+
+  .cap-list li::before {
+    content: '';
+    width: 16px; height: 1px;
+    background: var(--phase-color, var(--gold));
+    margin-top: 10px; flex-shrink: 0; opacity: 0.6;
+  }
+
+  .phase-value {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 28px;
+  }
+
+  .phase-value-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 14px;
+  }
+
+  .value-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+
+  .value-tag {
+    font-size: 12px; color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 6px 14px; border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .phase-card:hover .value-tag {
+    border-color: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.06);
+  }
+
+  /* ── TIMELINE VISUAL ── */
+  .timeline-section {
+    padding: 80px 40px 120px;
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .timeline-track {
+    position: relative;
+    padding-top: 80px;
+  }
+
+  .timeline-line {
+    position: absolute; top: 0; left: 50%;
+    width: 1px; height: 100%;
+    background: linear-gradient(var(--gold-dim), var(--border), var(--gold-dim));
+    transform: translateX(-50%);
+  }
+
+  .timeline-node {
+    display: flex; align-items: center;
+    margin-bottom: 80px; position: relative;
+    gap: 80px;
+  }
+
+  .timeline-node:nth-child(even) { flex-direction: row-reverse; }
+
+  .timeline-node-content {
+    flex: 1; text-align: right;
+    padding-right: 40px;
+  }
+
+  .timeline-node:nth-child(even) .timeline-node-content {
+    text-align: left; padding-right: 0; padding-left: 40px;
+  }
+
+  .timeline-node-dot {
+    position: absolute; left: 50%;
+    transform: translateX(-50%);
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--node-color, var(--gold));
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; z-index: 2;
+    transition: all 0.4s ease;
+  }
+
+  .timeline-node:nth-child(1) .timeline-node-dot { --node-color: var(--phase1); }
+  .timeline-node:nth-child(2) .timeline-node-dot { --node-color: var(--phase2); }
+  .timeline-node:nth-child(3) .timeline-node-dot { --node-color: var(--phase3); }
+  .timeline-node:nth-child(4) .timeline-node-dot { --node-color: var(--phase4); }
+
+  .timeline-node-dot::after {
+    content: '';
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--node-color, var(--gold));
+    opacity: 0.8;
+  }
+
+  .timeline-node:hover .timeline-node-dot {
+    box-shadow: 0 0 24px rgba(201,168,76,0.3);
+  }
+
+  .timeline-node-spacer { flex: 1; }
+
+  .node-phase {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--node-color, var(--gold));
+    margin-bottom: 8px;
+  }
+
+  .timeline-node:nth-child(1) .node-phase { color: var(--phase1); }
+  .timeline-node:nth-child(2) .node-phase { color: var(--phase2); }
+  .timeline-node:nth-child(3) .node-phase { color: var(--phase3); }
+  .timeline-node:nth-child(4) .node-phase { color: var(--phase4); }
+
+  .node-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 300;
+    margin-bottom: 8px; line-height: 1.2;
+  }
+
+  .node-period {
+    font-size: 13px; color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .node-desc {
+    font-size: 13px; color: var(--text-dim);
+    line-height: 1.7; max-width: 320px;
+    margin-left: auto;
+  }
+
+  .timeline-node:nth-child(even) .node-desc { margin-left: 0; }
+
+  /* ── VISION SECTION ── */
+  .vision-section {
+    padding: 100px 40px;
+    text-align: center;
+    background: linear-gradient(180deg, transparent 0%, rgba(201,168,76,0.03) 50%, transparent 100%);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .vision-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 6vw, 84px);
+    font-weight: 300; line-height: 1.05;
+    max-width: 800px; margin: 0 auto 60px;
+    letter-spacing: -0.02em;
+  }
+
+  .vision-title [data-en] > span,
+  .vision-title [data-ja] > span { color: var(--gold); font-style: italic; }
+  /* also handle direct span inside vision-title for non-translated spans */
+  .vision-title > span:not([data-en]):not([data-ja]) { color: var(--gold); font-style: italic; }
+
+  .vision-pillars {
+    display: flex; justify-content: center;
+    gap: 2px; max-width: 900px; margin: 0 auto;
+  }
+
+  .pillar {
+    flex: 1; padding: 40px 32px;
+    background: var(--bg2);
+    transition: all 0.4s ease;
+    position: relative; overflow: hidden;
+  }
+
+  .pillar::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--gold);
+    transform: scaleX(0); transform-origin: center;
+    transition: transform 0.4s ease;
+  }
+
+  .pillar:hover::before { transform: scaleX(1); }
+  .pillar:hover { background: var(--bg3); }
+
+  .pillar-icon {
+    font-size: 28px; margin-bottom: 16px;
+    display: block;
+  }
+
+  .pillar-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300;
+    margin-bottom: 10px;
+  }
+
+  .pillar-desc {
+    font-size: 12px; color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 60px 40px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300;
+    letter-spacing: 0.1em; color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .footer-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.3em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Reveal animation — desktop only, mobile shows all content immediately */
+  @media (hover: hover) and (pointer: fine) {
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+  }
+
+  /* ── LANGUAGE SWITCHER ── */
+  .lang-switch {
+    position: fixed; top: 24px; right: 28px;
+    z-index: 9990;
+    display: flex; align-items: center;
+    gap: 0;
+    background: rgba(13,15,18,0.92);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    overflow: hidden;
+    touch-action: manipulation;
+  }
+
+  .lang-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 12px 18px;
+    min-width: 48px; min-height: 44px;
+    transition: all 0.25s ease;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .lang-btn.active {
+    color: var(--gold);
+    background: rgba(201,168,76,0.08);
+  }
+
+  .lang-btn:not(:last-child)::after {
+    content: '';
+    position: absolute; right: 0; top: 20%; height: 60%;
+    width: 1px; background: var(--border);
+  }
+
+  .lang-btn:hover:not(.active) { color: var(--text-dim); }
+
+  /* Japanese typography overrides */
+  body.lang-ja .hero-title,
+  body.lang-ja .phase-title,
+  body.lang-ja .node-title,
+  body.lang-ja .vision-title,
+  body.lang-ja .pillar-name,
+  body.lang-ja .section-title,
+  body.lang-ja .footer-logo {
+    font-family: 'Noto Serif JP', serif;
+    letter-spacing: 0.05em;
+  }
+
+  body.lang-ja .hero-subtitle,
+  body.lang-ja .phase-objective,
+  body.lang-ja .node-desc,
+  body.lang-ja .pillar-desc,
+  body.lang-ja .cap-list li,
+  body.lang-ja .value-tag {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 200;
+  }
+
+  body.lang-ja .hero-title { line-height: 1.15; }
+  body.lang-ja .vision-title { line-height: 1.3; }
+
+  /* hide/show by language */
+  [data-en], [data-ja] { display: inline; }
+  body.lang-en [data-ja] { display: none; }
+  body.lang-ja [data-en] { display: none; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .phases-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 32px; }
+    .timeline-node, .timeline-node:nth-child(even) {
+      flex-direction: column; text-align: center;
+    }
+    .timeline-line { display: none; }
+    .timeline-node-dot { position: relative; left: auto; transform: none; }
+    .timeline-node-content, .timeline-node:nth-child(even) .timeline-node-content {
+      text-align: center; padding: 0;
+    }
+    .node-desc { margin: 0 auto; }
+    .timeline-node:nth-child(even) .node-desc { margin: 0 auto; }
+    .timeline-node-spacer { display: none; }
+    .vision-pillars { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- LANGUAGE SWITCHER -->
+<div class="lang-switch">
+  <button class="lang-btn active" id="btn-en">EN</button>
+  <button class="lang-btn" id="btn-ja">日本語</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+
+  <p class="hero-tag">
+    <span data-en>Development Roadmap 2024–2025</span>
+    <span data-ja>開発ロードマップ 2024–2025</span>
+  </p>
+  <h1 class="hero-title">
+    <span data-en>Digital<br><em>Concierge</em></span>
+    <span data-ja>デジタル<br><em>コンシェルジュ</em></span>
+  </h1>
+  <p class="hero-subtitle">
+    <span data-en>A smart service infrastructure evolving hospitality venues into seamless guest experiences</span>
+    <span data-ja>ホスピタリティ施設をシームレスなゲスト体験へと進化させるスマートサービス基盤</span>
+  </p>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-label"><span data-en>Phases</span><span data-ja>フェーズ</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12</div>
+      <div class="stat-label"><span data-en>Months</span><span data-ja>ヶ月</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">∞</div>
+      <div class="stat-label"><span data-en>Venues</span><span data-ja>施設数</span></div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span><span data-en>Scroll</span><span data-ja>スクロール</span></span>
+  </div>
+</section>
+
+<!-- VISION TICKER -->
+<div class="vision-strip">
+  <div class="vision-ticker">
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Seamless Guest Interaction</span><span data-ja>シームレスなゲスト体験</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Efficient Service Operations</span><span data-ja>効率的なサービス運営</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Scalable Venue Management</span><span data-ja>スケーラブルな施設管理</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>AI-Powered Assistance</span><span data-ja>AIによるサポート</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Real-Time Intelligence</span><span data-ja>リアルタイム知能</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Multi-Venue Infrastructure</span><span data-ja>マルチ施設インフラ</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Seamless Guest Interaction</span><span data-ja>シームレスなゲスト体験</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Efficient Service Operations</span><span data-ja>効率的なサービス運営</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Scalable Venue Management</span><span data-ja>スケーラブルな施設管理</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>AI-Powered Assistance</span><span data-ja>AIによるサポート</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Real-Time Intelligence</span><span data-ja>リアルタイム知能</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Multi-Venue Infrastructure</span><span data-ja>マルチ施設インフラ</span></div>
+  </div>
+</div>
+
+<!-- PHASES -->
+<section>
+  <div class="section-header reveal">
+    <p class="section-eyebrow"><span data-en>Development Phases</span><span data-ja>開発フェーズ</span></p>
+    <h2 class="section-title"><span data-en>Four Stages of Excellence</span><span data-ja>卓越への四つの段階</span></h2>
+  </div>
+
+  <div class="phases">
+    <div class="phases-grid">
+
+      <!-- Phase 1 -->
+      <div class="phase-card reveal">
+        <div class="phase-number">1</div>
+        <div class="phase-meta">
+          <span class="phase-badge"><span data-en>Phase 01</span><span data-ja>フェーズ 01</span></span>
+          <span class="phase-timeline"><span data-en>Month 1 — 2</span><span data-ja>第1〜2ヶ月</span></span>
+        </div>
+        <h3 class="phase-title"><span data-en>Digital Concierge<br>Foundation</span><span data-ja>デジタルコンシェルジュ<br>基盤構築</span></h3>
+        <p class="phase-objective">
+          <span data-en>Deploy the core system enabling guests to request services directly from in-room or table tablets with local processing capabilities.</span>
+          <span data-ja>客室・テーブルのタブレットからサービスを直接リクエストできるコアシステムをローカル処理機能とともに展開します。</span>
+        </p>
+
+        <div class="phase-capabilities">
+          <div class="cap-group">
+            <div class="cap-group-title"><span data-en>Guest Tablet Interface</span><span data-ja>ゲスト用タブレット画面</span></div>
+            <ul class="cap-list">
+              <li><span data-en>Request housekeeping services</span><span data-ja>ハウスキーピングのリクエスト</span></li>
+              <li><span data-en>Order room service</span><span data-ja>ルームサービスの注文</span></li>
+              <li><span data-en>Call staff on demand</span><span data-ja>スタッフへの呼び出し</span></li>
+              <li><span data-en>Request bill or checkout</span><span data-ja>お会計・チェックアウト依頼</span></li>
+            </ul>
+          </div>
+          <div class="cap-group">
+            <div class="cap-group-title"><span data-en>Local Edge System</span><span data-ja>ローカルエッジシステム</span></div>
+            <ul class="cap-list">
+              <li><span data-en>Mini PC installed at venue</span><span data-ja>施設内ミニPCの設置</span></li>
+              <li><span data-en>Local network processing</span><span data-ja>ローカルネットワーク処理</span></li>
+              <li><span data-en>Offline-resilient operation</span><span data-ja>オフライン耐性のある運用</span></li>
+            </ul>
+          </div>
+          <div class="cap-group">
+            <div class="cap-group-title"><span data-en>Staff Dashboard</span><span data-ja>スタッフ管理画面</span></div>
+            <ul class="cap-list">
+              <li><span data-en>Real-time request monitoring</span><span data-ja>リアルタイムのリクエスト監視</span></li>
+              <li><span data-en>Task acceptance workflow</span><span data-ja>タスク受付ワークフロー</span></li>
+              <li><span data-en>Live service status updates</span><span data-ja>サービス状況のリアルタイム更新</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="phase-value">
+          <div class="phase-value-title"><span data-en>Business Value</span><span data-ja>ビジネス価値</span></div>
+          <div class="value-tags">
+            <span class="value-tag"><span data-en>Faster response time</span><span data-ja>迅速な対応</span></span>
+            <span class="value-tag"><span data-en>Fewer errors</span><span data-ja>ミスの削減</span></span>
+            <span class="value-tag"><span data-en>Guest satisfaction</span><span data-ja>顧客満足度向上</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="phase-card reveal">
+        <div class="phase-number">2</div>
+        <div class="phase-meta">
+          <span class="phase-badge"><span data-en>Phase 02</span><span data-ja>フェーズ 02</span></span>
+          <span class="phase-timeline"><span data-en>Month 3 — 4</span><span data-ja>第3〜4ヶ月</span></span>
+        </div>
+        <h3 class="phase-title"><span data-en>AI Virtual<br>Concierge</span><span data-ja>AIバーチャル<br>コンシェルジュ</span></h3>
+        <p class="phase-objective">
+          <span data-en>Introduce a conversational AI concierge allowing guests to interact through natural language for seamless service requests.</span>
+          <span data-ja>自然な会話でシームレスなサービスリクエストができる、会話型AIコンシェルジュを導入します。</span>
+        </p>
+
+        <div class="phase-capabilities">
+          <div class="cap-group">
+            <div class="cap-group-title"><span data-en>AI Chat Interface</span><span data-ja>AIチャット画面</span></div>
+            <ul class="cap-list">
+              <li><span data-en>"Can I get more towels?"</span><span data-ja>「タオルを追加でいただけますか？」</span></li>
+              <li><span data-en>"Please send housekeeping."</span><span data-ja>「清掃をお願いします。」</span></li>
+              <li><span data-en>"What time is breakfast?"</span><span data-ja>「朝食は何時からですか？」</span></li>
+              <li><span data-en>Natural language triggers service workflows</span><span data-ja>自然言語でサービスワークフローを起動</span></li>
+            </ul>
+          </div>
+          <div class="cap-group">
+            <div class="cap-group-title"><span data-en>Knowledge Assistance</span><span data-ja>ナレッジアシスタント</span></div>
+            <ul class="cap-list">
+              <li><span data-en>Hotel facilities information</span><span data-ja>ホテル施設の案内</span></li>
+              <li><span data-en>Restaurant opening hours</span><span data-ja>レストランの営業時間</span></li>
+              <li><span data-en>Local area recommendations</span><span data-ja>周辺エリアのおすすめ情報</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="phase-value">
+          <div class="phase-value-title"><span data-en>Business Value</span><span data-ja>ビジネス価値</span></div>
+          <div class="value-tags">
+            <span class="value-tag"><span data-en>24/7 automation</span><span data-ja>24時間自動対応</span></span>
+            <span class="value-tag"><span data-en>Reduced staff load</span><span data-ja>スタッフ負担の軽減</span></span>
+            <span class="value-tag"><span data-en>Modern experience</span><span data-ja>モダンな体験</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase-card reveal">
+        <div class="phase-number">3</div>
+        <div class="phase-meta">
+          <span class="phase-badge"><span data-en>Phase 03</span><span data-ja>フェーズ 03</span></span>
+          <span class="phase-timeline"><span data-en>Month 5 — 7</span><span data-ja>第5〜7ヶ月</span></span>
+        </div>
+        <h3 class="phase-title"><span data-en>System<br>Integration</span><span data-ja>システム<br>インテグレーション</span></h3>
+        <p class="phase-objective">
+          <span data-en>Integrate with existing venue systems including ERP, POS, and Property Management Systems for automated unified workflows.</span>
+          <span data-ja>ERP・POS・PMSなど既存の施設システムと連携し、統合された自動ワークフローを実現します。</span>
+        </p>
+
+        <div class="phase-capabilities">
+          <div class="cap-group">
+            <div class="cap-group-title"><span data-en>Connected Systems</span><span data-ja>連携システム</span></div>
+            <ul class="cap-list">
+              <li><span data-en>Hotel ERP systems</span><span data-ja>ホテルERPシステム</span></li>
+              <li><span data-en>Property Management Systems (PMS)</span><span data-ja>ホテル管理システム（PMS）</span></li>
+              <li><span data-en>Restaurant POS systems</span><span data-ja>レストランPOSシステム</span></li>
+            </ul>
+          </div>
+          <div class="cap-group">
+            <div class="cap-group-title"><span data-en>Automated Workflows</span><span data-ja>自動化ワークフロー</span></div>
+            <ul class="cap-list">
+              <li><span data-en>Room checkout → update PMS</span><span data-ja>チェックアウト → PMSへ自動反映</span></li>
+              <li><span data-en>Food order → send to POS</span><span data-ja>食事注文 → POSへ自動送信</span></li>
+              <li><span data-en>Service request → assign department</span><span data-ja>サービス依頼 → 部門への自動割り当て</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="phase-value">
+          <div class="phase-value-title"><span data-en>Business Value</span><span data-ja>ビジネス価値</span></div>
+          <div class="value-tags">
+            <span class="value-tag"><span data-en>No manual entry</span><span data-ja>手入力の排除</span></span>
+            <span class="value-tag"><span data-en>Data sync</span><span data-ja>データ同期</span></span>
+            <span class="value-tag"><span data-en>Efficient ops</span><span data-ja>業務効率化</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="phase-card reveal">
+        <div class="phase-number">4</div>
+        <div class="phase-meta">
+          <span class="phase-badge"><span data-en>Phase 04</span><span data-ja>フェーズ 04</span></span>
+          <span class="phase-timeline"><span data-en>Month 8 — 12</span><span data-ja>第8〜12ヶ月</span></span>
+        </div>
+        <h3 class="phase-title"><span data-en>Cloud Platform<br>& Multi-Venue</span><span data-ja>クラウド基盤<br>＆マルチ施設管理</span></h3>
+        <p class="phase-objective">
+          <span data-en>Build a cloud-based management platform supporting multi-location deployment, advanced monitoring, and remote system management.</span>
+          <span data-ja>複数拠点への展開・高度な監視・リモート管理をサポートするクラウドベースの管理プラットフォームを構築します。</span>
+        </p>
+
+        <div class="phase-capabilities">
+          <div class="cap-group">
+            <div class="cap-group-title"><span data-en>Cloud Management</span><span data-ja>クラウド管理</span></div>
+            <ul class="cap-list">
+              <li><span data-en>Centralized multi-venue management</span><span data-ja>複数施設の一元管理</span></li>
+              <li><span data-en>Tablet and edge device control</span><span data-ja>タブレット・エッジデバイスの制御</span></li>
+              <li><span data-en>Remote configuration updates</span><span data-ja>リモートによる設定更新</span></li>
+            </ul>
+          </div>
+          <div class="cap-group">
+            <div class="cap-group-title"><span data-en>Analytics & Monitoring</span><span data-ja>分析・モニタリング</span></div>
+            <ul class="cap-list">
+              <li><span data-en>Service request volume tracking</span><span data-ja>サービスリクエスト量の追跡</span></li>
+              <li><span data-en>Response time analytics</span><span data-ja>応答時間の分析</span></li>
+              <li><span data-en>System health monitoring</span><span data-ja>システム稼働状況の監視</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="phase-value">
+          <div class="phase-value-title"><span data-en>Business Value</span><span data-ja>ビジネス価値</span></div>
+          <div class="value-tags">
+            <span class="value-tag"><span data-en>Scalable platform</span><span data-ja>拡張可能な基盤</span></span>
+            <span class="value-tag"><span data-en>Data insights</span><span data-ja>データ活用</span></span>
+            <span class="value-tag"><span data-en>Easy maintenance</span><span data-ja>容易なメンテナンス</span></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-section">
+  <div class="section-header reveal">
+    <p class="section-eyebrow"><span data-en>Visual Timeline</span><span data-ja>ビジュアルタイムライン</span></p>
+    <h2 class="section-title"><span data-en>The Journey</span><span data-ja>開発の歩み</span></h2>
+  </div>
+
+  <div class="timeline-track">
+    <div class="timeline-line"></div>
+
+    <div class="timeline-node reveal">
+      <div class="timeline-node-content">
+        <p class="node-phase">Phase 01</p>
+        <h3 class="node-title"><span data-en>Digital Concierge Foundation</span><span data-ja>デジタルコンシェルジュ基盤構築</span></h3>
+        <p class="node-period"><span data-en>Month 1 – Month 2</span><span data-ja>第1〜2ヶ月</span></p>
+        <p class="node-desc"><span data-en>Tablet service requests, local edge processing, and real-time staff dashboard form the operational backbone.</span><span data-ja>タブレットリクエスト、ローカルエッジ処理、リアルタイムスタッフ管理画面が運用の中核を形成します。</span></p>
+      </div>
+      <div class="timeline-node-dot"></div>
+      <div class="timeline-node-spacer"></div>
+    </div>
+
+    <div class="timeline-node reveal">
+      <div class="timeline-node-spacer"></div>
+      <div class="timeline-node-dot"></div>
+      <div class="timeline-node-content">
+        <p class="node-phase">Phase 02</p>
+        <h3 class="node-title"><span data-en>AI Virtual Concierge</span><span data-ja>AIバーチャルコンシェルジュ</span></h3>
+        <p class="node-period"><span data-en>Month 3 – Month 4</span><span data-ja>第3〜4ヶ月</span></p>
+        <p class="node-desc"><span data-en>Natural language AI transforms guest interaction, automating requests and answering questions 24/7.</span><span data-ja>自然言語AIがゲスト対応を変革し、リクエストの自動化と24時間の質問応答を実現します。</span></p>
+      </div>
+    </div>
+
+    <div class="timeline-node reveal">
+      <div class="timeline-node-content">
+        <p class="node-phase">Phase 03</p>
+        <h3 class="node-title"><span data-en>System Integration</span><span data-ja>システムインテグレーション</span></h3>
+        <p class="node-period"><span data-en>Month 5 – Month 7</span><span data-ja>第5〜7ヶ月</span></p>
+        <p class="node-desc"><span data-en>ERP, PMS, and POS systems connect seamlessly, eliminating manual data entry across operations.</span><span data-ja>ERP・PMS・POSがシームレスに連携し、業務全体の手動データ入力を排除します。</span></p>
+      </div>
+      <div class="timeline-node-dot"></div>
+      <div class="timeline-node-spacer"></div>
+    </div>
+
+    <div class="timeline-node reveal">
+      <div class="timeline-node-spacer"></div>
+      <div class="timeline-node-dot"></div>
+      <div class="timeline-node-content">
+        <p class="node-phase">Phase 04</p>
+        <h3 class="node-title"><span data-en>Cloud Platform</span><span data-ja>クラウドプラットフォーム</span></h3>
+        <p class="node-period"><span data-en>Month 8 – Month 12</span><span data-ja>第8〜12ヶ月</span></p>
+        <p class="node-desc"><span data-en>Multi-venue cloud infrastructure with analytics, remote monitoring, and scalable deployment.</span><span data-ja>分析・リモート監視・スケーラブルな展開を備えたマルチ施設クラウドインフラを構築します。</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LONG-TERM VISION -->
+<section class="vision-section">
+  <h2 class="vision-title reveal">
+    <span data-en>The future of<br>hospitality is<br><span>intelligent</span></span>
+    <span data-ja>ホスピタリティの未来は<br><span>インテリジェント</span>である</span>
+  </h2>
+
+  <div class="vision-pillars reveal">
+    <div class="pillar">
+      <span class="pillar-icon">◇</span>
+      <div class="pillar-name"><span data-en>Seamless Interaction</span><span data-ja>シームレスな体験</span></div>
+      <p class="pillar-desc"><span data-en>Guests communicate naturally. The system responds intelligently. No friction, no delays.</span><span data-ja>ゲストは自然に話しかけ、システムが的確に応答します。摩擦も遅延も生じません。</span></p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-icon">◈</span>
+      <div class="pillar-name"><span data-en>Efficient Operations</span><span data-ja>効率的な業務運営</span></div>
+      <p class="pillar-desc"><span data-en>Automated workflows eliminate manual tasks. Staff focus on what matters: guests.</span><span data-ja>自動化されたワークフローが手作業を排除し、スタッフはゲスト対応に専念できます。</span></p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-icon">◉</span>
+      <div class="pillar-name"><span data-en>Scalable Infrastructure</span><span data-ja>スケーラブルな基盤</span></div>
+      <p class="pillar-desc"><span data-en>From a single venue to a global chain — the platform grows with your ambition.</span><span data-ja>単一施設からグローバルチェーンまで、プラットフォームはあなたの野望とともに成長します。</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Digital Concierge</div>
+  <p class="footer-sub"><span data-en>Smart Service Infrastructure for Hospitality</span><span data-ja>ホスピタリティのためのスマートサービス基盤</span></p>
+</footer>
+
+<script>
+  // Language switcher — global, works on all devices
+  function setLang(lang) {
+    document.body.classList.remove('lang-en', 'lang-ja');
+    document.body.classList.add('lang-' + lang);
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
+  }
+
+  // Attach via addEventListener (more reliable on mobile than inline onclick)
+  document.getElementById('btn-en').addEventListener('click', function(e) {
+    e.preventDefault(); setLang('en');
+  });
+  document.getElementById('btn-ja').addEventListener('click', function(e) {
+    e.preventDefault(); setLang('ja');
+  });
+  // Also support touchend for faster response on mobile
+  document.getElementById('btn-en').addEventListener('touchend', function(e) {
+    e.preventDefault(); setLang('en');
+  });
+  document.getElementById('btn-ja').addEventListener('touchend', function(e) {
+    e.preventDefault(); setLang('ja');
+  });
+
+  // Default to English
+  setLang('en');
+
+  const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  // Custom cursor — desktop only
+  if (isDesktop) {
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX - 4 + 'px';
+      cursor.style.top = mouseY - 4 + 'px';
+    });
+
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      cursorRing.style.left = ringX - 16 + 'px';
+      cursorRing.style.top = ringY - 16 + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .phase-card, .pillar').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(2.5)';
+        cursorRing.style.transform = 'scale(1.4)';
+        cursorRing.style.borderColor = 'rgba(201,168,76,0.8)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        cursorRing.style.transform = 'scale(1)';
+        cursorRing.style.borderColor = 'rgba(201,168,76,0.5)';
+      });
+    });
+
+    // Scroll reveal — desktop only
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), 60);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }
+</script>
+</body>
+</html>
