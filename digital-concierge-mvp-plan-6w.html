@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Concierge — 6-Week AI-Accelerated MVP Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Outfit:wght@200;300;400;500&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --bg: #080A0C;
+    --bg2: #0D0F12;
+    --bg3: #121519;
+    --surface: rgba(255,255,255,0.03);
+    --border: rgba(201,168,76,0.2);
+    --text: #E8E4DC;
+    --text-dim: rgba(232,228,220,0.5);
+    --text-muted: rgba(232,228,220,0.3);
+    --dev-a: #C9A84C;
+    --dev-b: #7B9EA8;
+    --shared: #8FAF7C;
+    --milestone: #A87CB0;
+    --ai: #E8C97A;
+    --sprint1: #C9A84C;
+    --sprint2: #7B9EA8;
+    --sprint3: #8FAF7C;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  @media (hover: hover) and (pointer: fine) { body { cursor: none; } }
+
+  .cursor, .cursor-ring { display: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .cursor {
+      display: block; position: fixed; width: 8px; height: 8px;
+      background: var(--gold); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transition: transform 0.15s ease; mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      display: block; position: fixed; width: 32px; height: 32px;
+      border: 1px solid rgba(201,168,76,0.5); border-radius: 50%;
+      pointer-events: none; z-index: 9998; transition: all 0.3s ease;
+    }
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1; opacity: 0.4;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    position: relative; overflow: hidden;
+    text-align: center; padding: 80px 40px;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 120%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 20% 50%, rgba(123,158,168,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 80% 20%, rgba(168,124,176,0.04) 0%, transparent 50%);
+  }
+
+  .hero-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 300;
+    letter-spacing: 0.3em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 32px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(44px, 7vw, 96px);
+    font-weight: 300; line-height: 0.95;
+    letter-spacing: -0.02em; margin-bottom: 8px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .hero-title em { font-style: italic; color: var(--gold); display: block; }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: 300; font-style: italic;
+    color: var(--text-dim); margin-top: 24px; margin-bottom: 48px;
+    max-width: 620px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .hero-stats {
+    display: flex; gap: 48px; flex-wrap: wrap; justify-content: center;
+    opacity: 0; animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px; font-weight: 300; color: var(--gold); line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.25em;
+    color: var(--text-muted); text-transform: uppercase; margin-top: 6px;
+  }
+
+  .hero-scroll {
+    position: absolute; bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    opacity: 0; animation: fadeUp 0.8s ease 1.2s forwards;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(var(--gold), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  /* ── SECTION SHARED ── */
+  section { position: relative; z-index: 2; }
+
+  .section-header { text-align: center; padding: 100px 40px 60px; }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.35em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300; letter-spacing: -0.01em;
+  }
+
+  .section-desc {
+    font-size: 15px; color: var(--text-dim); line-height: 1.8;
+    max-width: 700px; margin: 24px auto 0; text-align: center;
+  }
+
+  /* ── TICKER ── */
+  .vision-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 0; overflow: hidden;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.03), transparent);
+  }
+
+  .vision-ticker {
+    display: flex; gap: 0;
+    animation: ticker 35s linear infinite; white-space: nowrap;
+  }
+
+  .vision-item {
+    display: flex; align-items: center; gap: 32px;
+    padding: 0 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-style: italic;
+    color: var(--text-dim); flex-shrink: 0;
+  }
+
+  .vision-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+
+  /* ── AI BOOST SECTION ── */
+  .ai-boost {
+    padding: 0 40px 80px;
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .ai-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+
+  .ai-card {
+    background: var(--bg2); padding: 36px 28px;
+    position: relative; overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  .ai-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--ai);
+    transform: scaleX(0); transform-origin: center;
+    transition: transform 0.4s ease;
+  }
+
+  .ai-card:hover::before { transform: scaleX(1); }
+  .ai-card:hover { background: var(--bg3); }
+
+  .ai-icon { font-size: 22px; margin-bottom: 12px; display: block; }
+
+  .ai-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px; font-weight: 300; margin-bottom: 8px;
+  }
+
+  .ai-card-desc {
+    font-size: 12px; color: var(--text-muted); line-height: 1.7;
+  }
+
+  .ai-card-save {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em;
+    color: var(--ai); margin-top: 14px; display: block;
+  }
+
+  /* ── TEAM ── */
+  .team-section { padding: 0 40px 100px; max-width: 1100px; margin: 0 auto; }
+
+  .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+
+  .team-card {
+    background: var(--bg2); padding: 48px 44px;
+    position: relative; overflow: hidden; transition: all 0.5s ease;
+  }
+
+  .team-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--card-color, var(--gold));
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+
+  .team-card:hover::before { opacity: 0.04; }
+
+  .team-card::after {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--card-color, var(--gold)), transparent);
+    transform: scaleX(0); transform-origin: left; transition: transform 0.5s ease;
+  }
+
+  .team-card:hover::after { transform: scaleX(1); }
+  .team-card:nth-child(1) { --card-color: var(--dev-a); }
+  .team-card:nth-child(2) { --card-color: var(--dev-b); }
+
+  .team-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--card-color, var(--gold));
+    margin-bottom: 16px; opacity: 0.8;
+  }
+
+  .team-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 300; margin-bottom: 12px;
+  }
+
+  .team-focus {
+    font-size: 14px; color: var(--text-dim); line-height: 1.7; margin-bottom: 28px;
+  }
+
+  .team-stack { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .stack-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 5px 12px; border-radius: 2px; transition: all 0.3s ease;
+  }
+
+  .team-card:hover .stack-tag {
+    border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.06);
+  }
+
+  /* ── SPRINT CARDS ── */
+  .sprints-section { padding: 0 40px 120px; max-width: 1400px; margin: 0 auto; }
+
+  .sprint-block {
+    margin-bottom: 4px; background: var(--bg2);
+    position: relative; overflow: hidden; transition: all 0.5s ease;
+  }
+
+  .sprint-block::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--sprint-color, var(--gold)); opacity: 0.6;
+  }
+
+  .sprint-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 36px 44px 36px 52px;
+    cursor: pointer; user-select: none; -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sprint-header-left {
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  }
+
+  .sprint-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--sprint-color, var(--gold));
+    border: 1px solid currentColor;
+    padding: 4px 10px; border-radius: 2px; opacity: 0.8; white-space: nowrap;
+  }
+
+  .sprint-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300;
+  }
+
+  .sprint-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em;
+    color: var(--text-muted); white-space: nowrap;
+  }
+
+  .sprint-toggle {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); font-size: 18px;
+    transition: transform 0.4s ease; flex-shrink: 0;
+  }
+
+  .sprint-block.open .sprint-toggle { transform: rotate(45deg); }
+
+  .sprint-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sprint-block.open .sprint-body { max-height: 4000px; }
+
+  .sprint-content { padding: 0 44px 44px 52px; }
+
+  .sprint-lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+
+  .lane { background: rgba(255,255,255,0.02); padding: 32px 28px; }
+
+  .lane-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+
+  .lane-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--lane-color, var(--gold)); opacity: 0.7;
+  }
+
+  .lane-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--lane-color, var(--gold)); opacity: 0.8;
+  }
+
+  .lane:nth-child(1) { --lane-color: var(--dev-a); }
+  .lane:nth-child(2) { --lane-color: var(--dev-b); }
+
+  .task-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+  .task-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 13px; color: var(--text-dim); line-height: 1.6;
+  }
+
+  .task-item::before {
+    content: ''; width: 14px; height: 1px;
+    background: var(--lane-color, var(--gold));
+    margin-top: 11px; flex-shrink: 0; opacity: 0.5;
+  }
+
+  .task-item strong { color: var(--text); font-weight: 400; }
+
+  .ai-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px; letter-spacing: 0.1em;
+    color: var(--ai); background: rgba(232,201,122,0.1);
+    border: 1px solid rgba(232,201,122,0.2);
+    padding: 2px 6px; border-radius: 2px;
+    margin-left: 6px; white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  .sprint-milestone {
+    margin-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 24px;
+  }
+
+  .milestone-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--milestone); margin-bottom: 12px; opacity: 0.7;
+  }
+
+  .milestone-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .milestone-tag {
+    font-size: 12px; color: var(--text-dim);
+    background: rgba(168,124,176,0.08);
+    border: 1px solid rgba(168,124,176,0.15);
+    padding: 6px 14px; border-radius: 2px;
+  }
+
+  /* ── GANTT ── */
+  .gantt-section { padding: 0 40px 120px; max-width: 1200px; margin: 0 auto; }
+
+  .gantt-wrapper { overflow-x: auto; padding-bottom: 12px; }
+
+  .gantt-table { width: 100%; min-width: 700px; border-collapse: collapse; }
+
+  .gantt-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--text-muted);
+    padding: 12px 8px; text-align: center;
+    border-bottom: 1px solid var(--border); font-weight: 400;
+  }
+
+  .gantt-table th:first-child { text-align: left; width: 220px; padding-left: 0; }
+
+  .gantt-row td {
+    padding: 10px 4px; vertical-align: middle;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .gantt-row td:first-child {
+    font-size: 12px; color: var(--text-dim); padding-left: 0; white-space: nowrap;
+  }
+
+  .gantt-bar { height: 20px; border-radius: 2px; opacity: 0.7; min-width: 100%; }
+  .gantt-bar-a { background: var(--dev-a); }
+  .gantt-bar-b { background: var(--dev-b); }
+  .gantt-bar-shared { background: linear-gradient(90deg, var(--dev-a), var(--dev-b)); }
+
+  .gantt-legend { display: flex; gap: 32px; margin-top: 24px; justify-content: center; }
+
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em; color: var(--text-muted);
+  }
+
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* ── COMPARISON ── */
+  .compare-section {
+    padding: 80px 40px;
+    background: linear-gradient(180deg, transparent, rgba(201,168,76,0.03), transparent);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 60px 1fr;
+    gap: 0; max-width: 900px; margin: 0 auto;
+    align-items: stretch;
+  }
+
+  .compare-card {
+    padding: 44px 36px; background: var(--bg2);
+    position: relative; overflow: hidden;
+  }
+
+  .compare-card.active::after {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--gold);
+  }
+
+  .compare-divider {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg2);
+  }
+
+  .compare-arrow {
+    font-size: 24px; color: var(--gold); opacity: 0.5;
+  }
+
+  .compare-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .compare-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px; font-weight: 300; margin-bottom: 6px;
+  }
+
+  .compare-title span { color: var(--gold); }
+
+  .compare-detail {
+    font-size: 13px; color: var(--text-dim); line-height: 1.7;
+  }
+
+  .compare-items {
+    list-style: none; margin-top: 20px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .compare-items li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 12px; color: var(--text-dim); line-height: 1.5;
+  }
+
+  .compare-items li::before {
+    content: ''; width: 12px; height: 1px;
+    background: var(--gold); margin-top: 9px; flex-shrink: 0; opacity: 0.4;
+  }
+
+  /* ── RISKS ── */
+  .risk-section { padding: 0 40px 120px; max-width: 1000px; margin: 0 auto; }
+
+  .risk-table { width: 100%; border-collapse: collapse; }
+
+  .risk-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold);
+    padding: 16px 20px; text-align: left;
+    border-bottom: 1px solid var(--border); font-weight: 400;
+  }
+
+  .risk-table td {
+    font-size: 13px; color: var(--text-dim);
+    padding: 18px 20px; line-height: 1.6;
+    border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top;
+  }
+
+  .risk-level {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em;
+    text-transform: uppercase; padding: 3px 8px;
+    border-radius: 2px; white-space: nowrap;
+  }
+
+  .risk-high { color: #C47A6A; background: rgba(196,122,106,0.12); border: 1px solid rgba(196,122,106,0.2); }
+  .risk-med { color: var(--gold); background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); }
+  .risk-low { color: var(--shared); background: rgba(143,175,124,0.1); border: 1px solid rgba(143,175,124,0.2); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 60px 40px; text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300;
+    letter-spacing: 0.1em; color: var(--gold); margin-bottom: 16px;
+  }
+
+  .footer-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.3em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+
+  /* ── LANG ── */
+  .lang-switch {
+    position: fixed; top: 24px; right: 28px; z-index: 9990;
+    display: flex; align-items: center;
+    background: rgba(13,15,18,0.92);
+    border: 1px solid var(--border); border-radius: 3px;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); overflow: hidden;
+  }
+
+  .lang-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--text-muted);
+    background: transparent; border: none; cursor: pointer;
+    padding: 12px 18px; min-width: 48px; min-height: 44px;
+    transition: all 0.25s ease; position: relative;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none; -webkit-user-select: none;
+  }
+
+  .lang-btn.active { color: var(--gold); background: rgba(201,168,76,0.08); }
+  .lang-btn:not(:last-child)::after {
+    content: ''; position: absolute; right: 0; top: 20%; height: 60%;
+    width: 1px; background: var(--border);
+  }
+  .lang-btn:hover:not(.active) { color: var(--text-dim); }
+
+  /* ── JP ── */
+  body.lang-ja .hero-title,
+  body.lang-ja .section-title,
+  body.lang-ja .sprint-title,
+  body.lang-ja .team-name,
+  body.lang-ja .compare-title,
+  body.lang-ja .footer-logo {
+    font-family: 'Noto Serif JP', serif; letter-spacing: 0.05em;
+  }
+
+  body.lang-ja .hero-subtitle,
+  body.lang-ja .section-desc,
+  body.lang-ja .team-focus,
+  body.lang-ja .task-item,
+  body.lang-ja .compare-detail,
+  body.lang-ja .risk-table td {
+    font-family: 'Noto Serif JP', serif; font-weight: 200;
+  }
+
+  body.lang-ja .hero-title { line-height: 1.15; }
+
+  [data-en], [data-ja] { display: inline; }
+  body.lang-en [data-ja] { display: none; }
+  body.lang-ja [data-en] { display: none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  @media (hover: hover) and (pointer: fine) {
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    .team-grid, .sprint-lanes { grid-template-columns: 1fr; }
+    .ai-grid { grid-template-columns: repeat(2, 1fr); }
+    .compare-grid { grid-template-columns: 1fr; }
+    .compare-divider { padding: 16px 0; }
+    .compare-arrow { transform: rotate(90deg); }
+    .hero-stats { gap: 28px; }
+    .sprint-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .sprint-header-left { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="lang-switch">
+  <button class="lang-btn active" id="btn-en">EN</button>
+  <button class="lang-btn" id="btn-ja">日本語</button>
+</div>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+
+  <p class="hero-tag">
+    <span data-en>AI-Accelerated MVP Plan — 2 Engineers</span>
+    <span data-ja>AI加速MVP計画 — エンジニア2名体制</span>
+  </p>
+  <h1 class="hero-title">
+    <span data-en>6 Weeks to<br><em>Production</em></span>
+    <span data-ja>6週間で<br><em>本番リリース</em></span>
+  </h1>
+  <p class="hero-subtitle">
+    <span data-en>AI-assisted development compresses a 12-week roadmap to 6 weeks — same MVP scope, accelerated execution through copilot coding, schema generation, and automated boilerplate</span>
+    <span data-ja>AI支援開発により12週間のロードマップを6週間に圧縮 — MVPスコープは同一、コパイロットコーディング・スキーマ生成・ボイラープレート自動化で実行を加速</span>
+  </p>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">2</div>
+      <div class="stat-label"><span data-en>Engineers</span><span data-ja>エンジニア</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label"><span data-en>Sprints</span><span data-ja>スプリント</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">6</div>
+      <div class="stat-label"><span data-en>Weeks</span><span data-ja>週間</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">~2×</div>
+      <div class="stat-label"><span data-en>AI Boost</span><span data-ja>AI加速</span></div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span><span data-en>Scroll</span><span data-ja>スクロール</span></span>
+  </div>
+</section>
+
+<!-- ════════════════════ TICKER ════════════════════ -->
+<div class="vision-strip">
+  <div class="vision-ticker">
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Claude Code for NestJS modules</span><span data-ja>Claude CodeでNestJSモジュール生成</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Copilot-driven React components</span><span data-ja>コパイロットでReactコンポーネント</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>AI schema generation</span><span data-ja>AIスキーマ生成</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Automated test scaffolding</span><span data-ja>自動テストスキャフォールド</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Boilerplate elimination</span><span data-ja>ボイラープレート排除</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>AI-assisted debugging</span><span data-ja>AI支援デバッグ</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Claude Code for NestJS modules</span><span data-ja>Claude CodeでNestJSモジュール生成</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Copilot-driven React components</span><span data-ja>コパイロットでReactコンポーネント</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>AI schema generation</span><span data-ja>AIスキーマ生成</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Automated test scaffolding</span><span data-ja>自動テストスキャフォールド</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>Boilerplate elimination</span><span data-ja>ボイラープレート排除</span></div>
+    <div class="vision-item"><div class="vision-dot"></div><span data-en>AI-assisted debugging</span><span data-ja>AI支援デバッグ</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════ AI BOOST ════════════════════ -->
+<section>
+  <div class="section-header reveal">
+    <p class="section-eyebrow"><span data-en>AI Acceleration Strategy</span><span data-ja>AI加速戦略</span></p>
+    <h2 class="section-title"><span data-en>Where AI Saves Time</span><span data-ja>AIが時間を節約する領域</span></h2>
+    <p class="section-desc">
+      <span data-en>AI doesn't replace engineering judgment — it eliminates repetitive coding. Here's where the ~2× speedup comes from.</span>
+      <span data-ja>AIはエンジニアリングの判断を置き換えるのではなく、反復的なコーディングを排除します。約2倍の速度向上の源泉はここにあります。</span>
+    </p>
+  </div>
+
+  <div class="ai-boost reveal">
+    <div class="ai-grid">
+      <div class="ai-card">
+        <span class="ai-icon">⚡</span>
+        <div class="ai-card-title"><span data-en>CRUD Generation</span><span data-ja>CRUD生成</span></div>
+        <p class="ai-card-desc"><span data-en>AI generates NestJS controller + service + DTO + validation for each of the 11 entities. Human reviews, adjusts business logic.</span><span data-ja>AIが11エンティティのNestJS controller + service + DTO + validationを生成。人間がレビューし、ビジネスロジックを調整。</span></p>
+        <span class="ai-card-save"><span data-en>Saves ~3 days</span><span data-ja>約3日削減</span></span>
+      </div>
+      <div class="ai-card">
+        <span class="ai-icon">◈</span>
+        <div class="ai-card-title"><span data-en>UI Components</span><span data-ja>UIコンポーネント</span></div>
+        <p class="ai-card-desc"><span data-en>Copilot generates React components from design specs: forms, tables, modals, cards, status badges. Human handles layout & polish.</span><span data-ja>コパイロットがデザイン仕様からReactコンポーネント生成: フォーム、テーブル、モーダル等。人間がレイアウトとポリッシュ担当。</span></p>
+        <span class="ai-card-save"><span data-en>Saves ~4 days</span><span data-ja>約4日削減</span></span>
+      </div>
+      <div class="ai-card">
+        <span class="ai-icon">△</span>
+        <div class="ai-card-title"><span data-en>Schema & Types</span><span data-ja>スキーマ・型</span></div>
+        <p class="ai-card-desc"><span data-en>Drizzle schema, Zod validators, TypeScript interfaces generated from the system design doc. Shared types across monorepo.</span><span data-ja>システム設計書からDrizzleスキーマ、Zodバリデーター、TypeScriptインターフェースを生成。モノレポ全体で共有型。</span></p>
+        <span class="ai-card-save"><span data-en>Saves ~2 days</span><span data-ja>約2日削減</span></span>
+      </div>
+      <div class="ai-card">
+        <span class="ai-icon">○</span>
+        <div class="ai-card-title"><span data-en>Config & Infra</span><span data-ja>設定・インフラ</span></div>
+        <p class="ai-card-desc"><span data-en>Nginx config, pm2 ecosystem, systemd units, setup.sh, coturn config — all generated from specs, manually verified.</span><span data-ja>Nginx設定、pm2エコシステム、systemdユニット、setup.sh、coturn設定 — すべて仕様から生成、手動検証。</span></p>
+        <span class="ai-card-save"><span data-en>Saves ~2 days</span><span data-ja>約2日削減</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ TEAM ════════════════════ -->
+<section>
+  <div class="section-header reveal">
+    <p class="section-eyebrow"><span data-en>Team Structure</span><span data-ja>チーム構成</span></p>
+    <h2 class="section-title"><span data-en>Two Engineers + AI Copilot</span><span data-ja>2人のエンジニア + AIコパイロット</span></h2>
+  </div>
+
+  <div class="team-section">
+    <div class="team-grid reveal">
+      <div class="team-card">
+        <div class="team-role"><span data-en>Developer A — Backend Lead</span><span data-ja>開発者A — バックエンドリード</span></div>
+        <h3 class="team-name"><span data-en>Edge & API Architect</span><span data-ja>Edge・APIアーキテクト</span></h3>
+        <p class="team-focus">
+          <span data-en>Owns NestJS API, database schema, WebSocket, WebRTC signaling, Redis, and Edge deployment. Uses AI to generate CRUD modules, schema, and infra configs.</span>
+          <span data-ja>NestJS API、DBスキーマ、WebSocket、WebRTCシグナリング、Redis、Edgeデプロイを担当。AIでCRUDモジュール、スキーマ、インフラ設定を生成。</span>
+        </p>
+        <div class="team-stack">
+          <span class="stack-tag">NestJS</span>
+          <span class="stack-tag">Drizzle</span>
+          <span class="stack-tag">SQLite</span>
+          <span class="stack-tag">Redis</span>
+          <span class="stack-tag">WebSocket</span>
+          <span class="stack-tag">WebRTC</span>
+          <span class="stack-tag">Nginx</span>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-role"><span data-en>Developer B — Frontend Lead</span><span data-ja>開発者B — フロントエンドリード</span></div>
+        <h3 class="team-name"><span data-en>Guest & Staff Experience</span><span data-ja>ゲスト・スタッフ体験</span></h3>
+        <p class="team-focus">
+          <span data-en>Owns Guest Tablet PWA, Staff Dashboard, real-time UI, offline caching, and kiosk mode. Uses AI to scaffold components, generate forms, and build responsive layouts.</span>
+          <span data-ja>ゲストタブレットPWA、スタッフダッシュボード、リアルタイムUI、オフラインキャッシュ、キオスクモードを担当。AIでコンポーネント、フォーム、レスポンシブレイアウトを生成。</span>
+        </p>
+        <div class="team-stack">
+          <span class="stack-tag">React 18</span>
+          <span class="stack-tag">TypeScript</span>
+          <span class="stack-tag">Vite</span>
+          <span class="stack-tag">Tailwind</span>
+          <span class="stack-tag">Zustand</span>
+          <span class="stack-tag">WebRTC</span>
+          <span class="stack-tag">PWA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ SPRINTS ════════════════════ -->
+<section>
+  <div class="section-header reveal">
+    <p class="section-eyebrow"><span data-en>Sprint Breakdown</span><span data-ja>スプリント詳細</span></p>
+    <h2 class="section-title"><span data-en>Three Sprints to Ship</span><span data-ja>3スプリントでリリース</span></h2>
+    <p class="section-desc">
+      <span data-en>Each sprint is 2 weeks. AI handles boilerplate; humans own architecture decisions, UX quality, and integration testing.</span>
+      <span data-ja>各スプリント2週間。AIがボイラープレートを処理、人間がアーキテクチャ判断・UX品質・結合テストを担当。</span>
+    </p>
+  </div>
+
+  <div class="sprints-section">
+
+    <!-- ─── SPRINT 1 ─── -->
+    <div class="sprint-block reveal open" style="--sprint-color: var(--sprint1)">
+      <div class="sprint-header">
+        <div class="sprint-header-left">
+          <span class="sprint-badge"><span data-en>Sprint 01</span><span data-ja>スプリント 01</span></span>
+          <h3 class="sprint-title"><span data-en>Foundation & Core Request Flow</span><span data-ja>基盤構築・コアリクエストフロー</span></h3>
+          <span class="sprint-period"><span data-en>Week 1 — 2</span><span data-ja>第1〜2週</span></span>
+        </div>
+        <div class="sprint-toggle">+</div>
+      </div>
+      <div class="sprint-body">
+        <div class="sprint-content">
+          <div class="sprint-lanes">
+            <div class="lane">
+              <div class="lane-header">
+                <div class="lane-dot"></div>
+                <div class="lane-title"><span data-en>Dev A — Backend</span><span data-ja>Dev A — バックエンド</span></div>
+              </div>
+              <ul class="task-list">
+                <li class="task-item"><span data-en><strong>Monorepo + NestJS scaffold</strong> — pnpm workspace (api, guest-app, dashboard, shared, database). NestJS bootstrap with module architecture, env config <span class="ai-tag">AI SCAFFOLD</span></span><span data-ja><strong>モノレポ + NestJSスキャフォールド</strong> — pnpmワークスペース。NestJSブートストラップ（モジュールアーキテクチャ、env設定）<span class="ai-tag">AI生成</span></span></li>
+                <li class="task-item"><span data-en><strong>Full Drizzle schema</strong> — All 11 tables generated from system design doc. WAL mode, PRAGMAs, indexes. Seed script for demo venue <span class="ai-tag">AI GENERATE</span></span><span data-ja><strong>Drizzle全スキーマ</strong> — システム設計書から全11テーブル生成。WALモード、PRAGMA、インデックス。デモ用シードスクリプト <span class="ai-tag">AI生成</span></span></li>
+                <li class="task-item"><span data-en><strong>Auth module</strong> — PIN-based staff login, JWT (8h), device-based guest auth, role guards (staff/manager/admin)</span><span data-ja><strong>認証モジュール</strong> — PINベースログイン、JWT（8時間）、デバイスベース認証、ロールガード</span></li>
+                <li class="task-item"><span data-en><strong>All CRUD endpoints</strong> — Venues, departments, location_units, devices, staff, services, categories. AI generates controller + service + DTO, human reviews <span class="ai-tag">AI GENERATE</span></span><span data-ja><strong>全CRUDエンドポイント</strong> — 施設、部門、ロケーション、デバイス、スタッフ、サービス、カテゴリ。AIがcontroller + service + DTOを生成、人間がレビュー <span class="ai-tag">AI生成</span></span></li>
+                <li class="task-item"><span data-en><strong>Request module + Redis + WebSocket</strong> — POST/GET/PATCH requests. Redis pub/sub. NestJS WS gateway at /ws. Real-time broadcast of request events</span><span data-ja><strong>リクエストモジュール + Redis + WebSocket</strong> — POST/GET/PATCHリクエスト。Redis pub/sub。/wsでWS gateway。リクエストイベントのリアルタイム配信</span></li>
+                <li class="task-item"><span data-en><strong>Device heartbeat</strong> — POST /devices/register, POST /heartbeat, auto-offline detection via stale check</span><span data-ja><strong>デバイスハートビート</strong> — POST /devices/register、POST /heartbeat、古いチェックによる自動オフライン検出</span></li>
+              </ul>
+            </div>
+            <div class="lane">
+              <div class="lane-header">
+                <div class="lane-dot"></div>
+                <div class="lane-title"><span data-en>Dev B — Frontend</span><span data-ja>Dev B — フロントエンド</span></div>
+              </div>
+              <ul class="task-list">
+                <li class="task-item"><span data-en><strong>Vite + React + Design system</strong> — Scaffold both apps. Core tokens, Button, Input, Card, Badge, Toast, Modal components. Tailwind config <span class="ai-tag">AI SCAFFOLD</span></span><span data-ja><strong>Vite + React + デザインシステム</strong> — 両アプリスキャフォールド。コアコンポーネント群。Tailwind設定 <span class="ai-tag">AI生成</span></span></li>
+                <li class="task-item"><span data-en><strong>Shared types + API client</strong> — TypeScript interfaces for all 11 entities, Zod schemas, typed fetch wrapper with auth headers, error handling <span class="ai-tag">AI GENERATE</span></span><span data-ja><strong>共有型 + APIクライアント</strong> — 全11エンティティのTS型、Zodスキーマ、認証ヘッダー付きfetchラッパー、エラーハンドリング <span class="ai-tag">AI生成</span></span></li>
+                <li class="task-item"><span data-en><strong>Guest: Service catalog + request form</strong> — Category grid, tap-to-request, quantity picker (order type), guest notes, confirm & submit</span><span data-ja><strong>ゲスト: サービスカタログ + リクエストフォーム</strong> — カテゴリグリッド、タップリクエスト、数量ピッカー、メモ入力、確認＆送信</span></li>
+                <li class="task-item"><span data-en><strong>Guest: Active request tracking</strong> — Live status cards (pending → assigned → processing → done). WebSocket auto-update</span><span data-ja><strong>ゲスト: アクティブリクエスト追跡</strong> — ライブステータスカード（pending → done）。WebSocket自動更新</span></li>
+                <li class="task-item"><span data-en><strong>Dashboard: PIN login + request queue</strong> — Numpad PIN entry, JWT storage. Real-time request list with department/status/priority filters. Accept button</span><span data-ja><strong>ダッシュボード: PINログイン + リクエストキュー</strong> — テンキーPIN入力、JWT保存。部門/ステータス/優先度フィルタ付きリアルタイムリクエストリスト</span></li>
+                <li class="task-item"><span data-en><strong>WebSocket client</strong> — Zustand store for real-time state. Reconnection with exponential backoff. Shared hook for both apps</span><span data-ja><strong>WebSocketクライアント</strong> — リアルタイム状態用Zustandストア。指数バックオフ再接続。両アプリ共有フック</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="sprint-milestone">
+            <div class="milestone-label"><span data-en>Sprint 1 Milestone</span><span data-ja>スプリント1マイルストーン</span></div>
+            <div class="milestone-tags">
+              <span class="milestone-tag"><span data-en>End-to-end request flow live</span><span data-ja>エンドツーエンドのリクエストフロー稼働</span></span>
+              <span class="milestone-tag"><span data-en>All CRUD APIs working</span><span data-ja>全CRUD API動作</span></span>
+              <span class="milestone-tag"><span data-en>Real-time WebSocket updates</span><span data-ja>リアルタイムWebSocket更新</span></span>
+              <span class="milestone-tag"><span data-en>Guest can request, staff can accept</span><span data-ja>ゲスト送信・スタッフ受付可能</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SPRINT 2 ─── -->
+    <div class="sprint-block reveal" style="--sprint-color: var(--sprint2)">
+      <div class="sprint-header">
+        <div class="sprint-header-left">
+          <span class="sprint-badge"><span data-en>Sprint 02</span><span data-ja>スプリント 02</span></span>
+          <h3 class="sprint-title"><span data-en>Voice Calls, Orders & Admin</span><span data-ja>音声通話・注文・管理パネル</span></h3>
+          <span class="sprint-period"><span data-en>Week 3 — 4</span><span data-ja>第3〜4週</span></span>
+        </div>
+        <div class="sprint-toggle">+</div>
+      </div>
+      <div class="sprint-body">
+        <div class="sprint-content">
+          <div class="sprint-lanes">
+            <div class="lane">
+              <div class="lane-header">
+                <div class="lane-dot"></div>
+                <div class="lane-title"><span data-en>Dev A — Backend</span><span data-ja>Dev A — バックエンド</span></div>
+              </div>
+              <ul class="task-list">
+                <li class="task-item"><span data-en><strong>Call signaling module</strong> — WebSocket events: call.initiate, call.answer, call.ice_candidate, call.hangup. Call room state machine, call_logs persistence</span><span data-ja><strong>通話シグナリングモジュール</strong> — WebSocketイベント: call.initiate〜hangup。通話ルーム状態マシン、call_logs永続化</span></li>
+                <li class="task-item"><span data-en><strong>coturn setup</strong> — Install coturn on Edge, LAN-only config, TURN credentials. Fallback when P2P fails across VLANs</span><span data-ja><strong>coturnセットアップ</strong> — EdgeにLAN専用coturnインストール。VLAN間P2P失敗時のフォールバック</span></li>
+                <li class="task-item"><span data-en><strong>Order flow extension</strong> — request_items CRUD for type=order. Status flow: pending → accepted → preparing → ready → served <span class="ai-tag">AI GENERATE</span></span><span data-ja><strong>注文フロー拡張</strong> — type=order用request_items CRUD。ステータス: pending → served <span class="ai-tag">AI生成</span></span></li>
+                <li class="task-item"><span data-en><strong>Staff duty + event logging</strong> — Duty toggle with on-duty filtering. EventModule for audit trail. Stale request auto-escalation (30min timeout)</span><span data-ja><strong>勤務切替 + イベントログ</strong> — オンデューティフィルタ付き勤務切替。監査証跡用EventModule。古いリクエスト自動エスカレーション（30分）</span></li>
+                <li class="task-item"><span data-en><strong>Scheduler module</strong> — Daily cron: events cleanup (30d), call_logs (90d), requests archive (180d), SQLite backup to /data/backups/ <span class="ai-tag">AI SCAFFOLD</span></span><span data-ja><strong>スケジューラモジュール</strong> — 日次cron: イベント（30日）、通話ログ（90日）、リクエストアーカイブ（180日）、SQLiteバックアップ <span class="ai-tag">AI生成</span></span></li>
+              </ul>
+            </div>
+            <div class="lane">
+              <div class="lane-header">
+                <div class="lane-dot"></div>
+                <div class="lane-title"><span data-en>Dev B — Frontend</span><span data-ja>Dev B — フロントエンド</span></div>
+              </div>
+              <ul class="task-list">
+                <li class="task-item"><span data-en><strong>Guest: Call Staff UI</strong> — "Call Staff" button → WebRTC offer → ringing animation → connected → hangup. Audio-only, full-screen overlay</span><span data-ja><strong>ゲスト: スタッフ呼び出しUI</strong> — 「スタッフを呼ぶ」→ WebRTCオファー → 呼び出しアニメーション → 接続 → 終了</span></li>
+                <li class="task-item"><span data-en><strong>Dashboard: Incoming call + history</strong> — Ring notification (sound + visual), answer/decline, active call timer, call history list</span><span data-ja><strong>ダッシュボード: 着信 + 履歴</strong> — 着信通知（音声+ビジュアル）、応答/拒否、通話タイマー、通話履歴</span></li>
+                <li class="task-item"><span data-en><strong>Guest: Order UI</strong> — Menu with categories, item detail with quantity ±, notes, cart summary with total, order status tracking <span class="ai-tag">AI SCAFFOLD</span></span><span data-ja><strong>ゲスト: 注文UI</strong> — カテゴリ付きメニュー、数量±、メモ、カートサマリー、注文ステータス追跡 <span class="ai-tag">AI生成</span></span></li>
+                <li class="task-item"><span data-en><strong>Dashboard: Full request lifecycle</strong> — Accept → processing → done. Staff notes. Priority badges. Time elapsed. Order-specific status (preparing → served)</span><span data-ja><strong>ダッシュボード: リクエスト全ライフサイクル</strong> — accept → done。スタッフメモ。優先度バッジ。経過時間。注文固有ステータス</span></li>
+                <li class="task-item"><span data-en><strong>Dashboard: Admin CRUD views</strong> — Departments, location units, services, categories, staff, devices. Table + modal pattern. AI generates form components <span class="ai-tag">AI GENERATE</span></span><span data-ja><strong>ダッシュボード: 管理者CRUDビュー</strong> — 部門、ロケーション、サービス、スタッフ、デバイス。テーブル+モーダルパターン <span class="ai-tag">AI生成</span></span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="sprint-milestone">
+            <div class="milestone-label"><span data-en>Sprint 2 Milestone</span><span data-ja>スプリント2マイルストーン</span></div>
+            <div class="milestone-tags">
+              <span class="milestone-tag"><span data-en>Voice calls work on LAN</span><span data-ja>LAN上で音声通話動作</span></span>
+              <span class="milestone-tag"><span data-en>Full order flow end-to-end</span><span data-ja>注文フローのエンドツーエンド</span></span>
+              <span class="milestone-tag"><span data-en>Admin can configure entire venue</span><span data-ja>管理者が施設全体を設定可能</span></span>
+              <span class="milestone-tag"><span data-en>Feature-complete application</span><span data-ja>フィーチャーコンプリートアプリ</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SPRINT 3 ─── -->
+    <div class="sprint-block reveal" style="--sprint-color: var(--sprint3)">
+      <div class="sprint-header">
+        <div class="sprint-header-left">
+          <span class="sprint-badge"><span data-en>Sprint 03</span><span data-ja>スプリント 03</span></span>
+          <h3 class="sprint-title"><span data-en>Edge Deploy, PWA & Launch</span><span data-ja>Edgeデプロイ・PWA・ローンチ</span></h3>
+          <span class="sprint-period"><span data-en>Week 5 — 6</span><span data-ja>第5〜6週</span></span>
+        </div>
+        <div class="sprint-toggle">+</div>
+      </div>
+      <div class="sprint-body">
+        <div class="sprint-content">
+          <div class="sprint-lanes">
+            <div class="lane">
+              <div class="lane-header">
+                <div class="lane-dot"></div>
+                <div class="lane-title"><span data-en>Dev A — Infra & QA</span><span data-ja>Dev A — インフラ・QA</span></div>
+              </div>
+              <ul class="task-list">
+                <li class="task-item"><span data-en><strong>setup.sh script</strong> — Automated Edge provisioning: Node 20, pnpm, pm2, Nginx, Redis, coturn. SSL cert. One-command deployment <span class="ai-tag">AI GENERATE</span></span><span data-ja><strong>setup.shスクリプト</strong> — Edge自動プロビジョニング: Node 20、pnpm、pm2、Nginx、Redis、coturn。SSL証明書。ワンコマンドデプロイ <span class="ai-tag">AI生成</span></span></li>
+                <li class="task-item"><span data-en><strong>Nginx + pm2 config</strong> — Reverse proxy: /guest/*, /dashboard/*, /api/*, /ws. pm2 ecosystem with auto-restart, log rotation, memory limits</span><span data-ja><strong>Nginx + pm2設定</strong> — リバースプロキシ: /guest/*, /dashboard/*, /api/*, /ws。自動再起動、ログローテーション、メモリ制限付きpm2</span></li>
+                <li class="task-item"><span data-en><strong>Edge hardware testing</strong> — Deploy on Intel NUC / Beelink (Ubuntu 22.04). Load test: 20 tablets, 50 req/min. Voice call across VLAN test</span><span data-ja><strong>Edgeハードウェアテスト</strong> — Intel NUC / Beelink（Ubuntu 22.04）にデプロイ。負荷テスト: 20台、50req/分。VLAN間通話テスト</span></li>
+                <li class="task-item"><span data-en><strong>Integration tests</strong> — E2E request flow, voice call lifecycle, auth edge cases, concurrent requests, Redis failure recovery <span class="ai-tag">AI SCAFFOLD</span></span><span data-ja><strong>結合テスト</strong> — E2Eリクエストフロー、通話ライフサイクル、認証エッジケース、同時リクエスト、Redis障害復旧 <span class="ai-tag">AI生成</span></span></li>
+                <li class="task-item"><span data-en><strong>Security + docs</strong> — Rate limiting, input sanitization, LAN-only CORS. Swagger/OpenAPI docs. Deployment guide. Troubleshooting playbook</span><span data-ja><strong>セキュリティ + ドキュメント</strong> — レート制限、入力サニタイズ、LAN専用CORS。Swagger/OpenAPIドキュメント。デプロイガイド</span></li>
+              </ul>
+            </div>
+            <div class="lane">
+              <div class="lane-header">
+                <div class="lane-dot"></div>
+                <div class="lane-title"><span data-en>Dev B — PWA & Polish</span><span data-ja>Dev B — PWA・ポリッシュ</span></div>
+              </div>
+              <ul class="task-list">
+                <li class="task-item"><span data-en><strong>Service Worker + PWA</strong> — Workbox: cache-first static, network-first API. Offline fallback page. Web app manifest, icons, splash. Auto-update on new build</span><span data-ja><strong>Service Worker + PWA</strong> — Workbox: 静的キャッシュファースト、APIネットワークファースト。オフラインフォールバック。マニフェスト、アイコン、自動更新</span></li>
+                <li class="task-item"><span data-en><strong>Tablet optimization</strong> — Touch targets 48px+, swipe gestures for request actions, landscape + portrait responsive. Chrome kiosk mode setup guide</span><span data-ja><strong>タブレット最適化</strong> — タップターゲット48px+、スワイプジェスチャー、横向き+縦向きレスポンシブ。Chromeキオスクモード設定ガイド</span></li>
+                <li class="task-item"><span data-en><strong>UI polish pass</strong> — Loading states, empty states, error states everywhere. Skeleton loaders. Toast notifications. Smooth state transitions</span><span data-ja><strong>UIポリッシュ</strong> — 全画面のローディング/空/エラー状態。スケルトンローダー。トースト通知。スムーズな状態遷移</span></li>
+                <li class="task-item"><span data-en><strong>Sound + notifications</strong> — Audio for: new request, incoming call, status change. Volume control. Silent mode. Browser notification permission</span><span data-ja><strong>サウンド + 通知</strong> — 新規リクエスト、着信、ステータス変更の音声。音量コントロール。サイレントモード。ブラウザ通知許可</span></li>
+                <li class="task-item"><span data-en><strong>Venue pilot prep</strong> — Configure first venue data. Staff training materials. Quick-start guide. Tablet QA on Samsung Galaxy Tab A (24h stability)</span><span data-ja><strong>施設パイロット準備</strong> — 最初の施設データ設定。スタッフ研修資料。クイックスタートガイド。Galaxy Tab AでのQA（24時間安定性）</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="sprint-milestone">
+            <div class="milestone-label"><span data-en>Sprint 3 Milestone — MVP SHIP 🚀</span><span data-ja>スプリント3マイルストーン — MVPリリース 🚀</span></div>
+            <div class="milestone-tags">
+              <span class="milestone-tag"><span data-en>Production-ready Edge system</span><span data-ja>本番対応Edgeシステム</span></span>
+              <span class="milestone-tag"><span data-en>PWA works offline</span><span data-ja>PWAオフライン動作</span></span>
+              <span class="milestone-tag"><span data-en>First venue deployed</span><span data-ja>最初の施設にデプロイ</span></span>
+              <span class="milestone-tag"><span data-en>All features tested on hardware</span><span data-ja>全機能ハードウェアテスト済み</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════ GANTT ════════════════════ -->
+<section>
+  <div class="section-header reveal">
+    <p class="section-eyebrow"><span data-en>Visual Timeline</span><span data-ja>ビジュアルタイムライン</span></p>
+    <h2 class="section-title"><span data-en>6-Week Overview</span><span data-ja>6週間の概要</span></h2>
+  </div>
+
+  <div class="gantt-section reveal">
+    <div class="gantt-wrapper">
+      <table class="gantt-table">
+        <thead>
+          <tr>
+            <th><span data-en>Workstream</span><span data-ja>ワークストリーム</span></th>
+            <th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th>W6</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="gantt-row">
+            <td><span data-en>Monorepo + Schema + Auth</span><span data-ja>モノレポ + スキーマ + 認証</span></td>
+            <td><div class="gantt-bar gantt-bar-shared"></div></td>
+            <td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>All CRUD APIs + Request Flow</span><span data-ja>全CRUD API + リクエストフロー</span></td>
+            <td colspan="2"><div class="gantt-bar gantt-bar-a"></div></td>
+            <td></td><td></td><td></td><td></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>WebSocket + Redis Real-time</span><span data-ja>WebSocket + Redisリアルタイム</span></td>
+            <td></td>
+            <td><div class="gantt-bar gantt-bar-a"></div></td>
+            <td></td><td></td><td></td><td></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>Design System + Shared Types</span><span data-ja>デザインシステム + 共有型</span></td>
+            <td><div class="gantt-bar gantt-bar-b"></div></td>
+            <td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>Guest Tablet PWA</span><span data-ja>ゲストタブレットPWA</span></td>
+            <td></td>
+            <td colspan="3"><div class="gantt-bar gantt-bar-b"></div></td>
+            <td></td><td></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>Staff Dashboard</span><span data-ja>スタッフダッシュボード</span></td>
+            <td></td>
+            <td colspan="3"><div class="gantt-bar gantt-bar-b"></div></td>
+            <td></td><td></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>WebRTC Voice Calls</span><span data-ja>WebRTC音声通話</span></td>
+            <td></td><td></td>
+            <td colspan="2"><div class="gantt-bar gantt-bar-shared"></div></td>
+            <td></td><td></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>Order System + Admin Panel</span><span data-ja>注文システム + 管理パネル</span></td>
+            <td></td><td></td>
+            <td colspan="2"><div class="gantt-bar gantt-bar-shared"></div></td>
+            <td></td><td></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>Edge Deploy + Infra</span><span data-ja>Edgeデプロイ + インフラ</span></td>
+            <td></td><td></td><td></td><td></td>
+            <td colspan="2"><div class="gantt-bar gantt-bar-a"></div></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>PWA + Offline + Kiosk</span><span data-ja>PWA + オフライン + キオスク</span></td>
+            <td></td><td></td><td></td><td></td>
+            <td><div class="gantt-bar gantt-bar-b"></div></td>
+            <td></td>
+          </tr>
+          <tr class="gantt-row">
+            <td><span data-en>QA + Polish + Launch</span><span data-ja>QA + ポリッシュ + ローンチ</span></td>
+            <td></td><td></td><td></td><td></td>
+            <td></td>
+            <td><div class="gantt-bar gantt-bar-shared"></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="gantt-legend">
+      <div class="legend-item"><div class="legend-dot" style="background: var(--dev-a)"></div><span data-en>Dev A (Backend)</span><span data-ja>Dev A（バックエンド）</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--dev-b)"></div><span data-en>Dev B (Frontend)</span><span data-ja>Dev B（フロントエンド）</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background: linear-gradient(90deg, var(--dev-a), var(--dev-b))"></div><span data-en>Shared</span><span data-ja>共有</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ COMPARISON ════════════════════ -->
+<section class="compare-section">
+  <div class="section-header reveal" style="padding-top: 20px;">
+    <p class="section-eyebrow"><span data-en>Timeline Comparison</span><span data-ja>タイムライン比較</span></p>
+    <h2 class="section-title"><span data-en>12 Weeks → 6 Weeks</span><span data-ja>12週間 → 6週間</span></h2>
+  </div>
+
+  <div class="compare-grid reveal">
+    <div class="compare-card">
+      <div class="compare-label"><span data-en>Without AI</span><span data-ja>AIなし</span></div>
+      <div class="compare-title"><span data-en>12 <span>weeks</span></span><span data-ja>12<span>週間</span></span></div>
+      <p class="compare-detail"><span data-en>6 sprints, ~960 engineer-hours</span><span data-ja>6スプリント、約960エンジニア時間</span></p>
+      <ul class="compare-items">
+        <li><span data-en>Manual CRUD for 11 entities (~5 days)</span><span data-ja>11エンティティの手動CRUD（約5日）</span></li>
+        <li><span data-en>Hand-code all UI components (~6 days)</span><span data-ja>全UIコンポーネントを手動コーディング（約6日）</span></li>
+        <li><span data-en>Write schemas + types manually (~3 days)</span><span data-ja>スキーマ + 型を手動記述（約3日）</span></li>
+        <li><span data-en>Config files from scratch (~2 days)</span><span data-ja>設定ファイルをゼロから作成（約2日）</span></li>
+        <li><span data-en>Separate QA + polish sprint</span><span data-ja>QA + ポリッシュ専用スプリント</span></li>
+      </ul>
+    </div>
+    <div class="compare-divider">
+      <span class="compare-arrow">→</span>
+    </div>
+    <div class="compare-card active">
+      <div class="compare-label"><span data-en>With AI Copilot</span><span data-ja>AIコパイロット使用</span></div>
+      <div class="compare-title"><span data-en>6 <span>weeks</span></span><span data-ja>6<span>週間</span></span></div>
+      <p class="compare-detail"><span data-en>3 sprints, ~480 engineer-hours + AI</span><span data-ja>3スプリント、約480エンジニア時間 + AI</span></p>
+      <ul class="compare-items">
+        <li><span data-en>AI generates CRUD → human reviews (~1.5 days)</span><span data-ja>AIがCRUD生成 → 人間がレビュー（約1.5日）</span></li>
+        <li><span data-en>AI scaffolds components → human polishes (~2 days)</span><span data-ja>AIがコンポーネント生成 → 人間がポリッシュ（約2日）</span></li>
+        <li><span data-en>Schema + types from design doc (~1 day)</span><span data-ja>設計書からスキーマ + 型（約1日）</span></li>
+        <li><span data-en>Config generated from specs (~0.5 days)</span><span data-ja>仕様から設定生成（約0.5日）</span></li>
+        <li><span data-en>QA integrated into final sprint</span><span data-ja>QAを最終スプリントに統合</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ RISKS ════════════════════ -->
+<section>
+  <div class="section-header reveal">
+    <p class="section-eyebrow"><span data-en>Risk Assessment</span><span data-ja>リスク評価</span></p>
+    <h2 class="section-title"><span data-en>Compressed Timeline Risks</span><span data-ja>圧縮タイムラインのリスク</span></h2>
+  </div>
+
+  <div class="risk-section reveal">
+    <table class="risk-table">
+      <thead>
+        <tr>
+          <th><span data-en>Risk</span><span data-ja>リスク</span></th>
+          <th><span data-en>Level</span><span data-ja>レベル</span></th>
+          <th><span data-en>Mitigation</span><span data-ja>対策</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span data-en>AI-generated code quality variance</span><span data-ja>AI生成コードの品質ばらつき</span></td>
+          <td><span class="risk-level risk-high"><span data-en>High</span><span data-ja>高</span></span></td>
+          <td><span data-en>Mandatory human review for every AI-generated module. Strict TypeScript, ESLint, and Drizzle type-safety catch errors at compile time. Never ship unreviewed AI code.</span><span data-ja>AI生成モジュールごとに必須の人間レビュー。TypeScript、ESLint、Drizzle型安全性でコンパイル時にエラー検出。未レビューのAIコードは出荷しない。</span></td>
+        </tr>
+        <tr>
+          <td><span data-en>WebRTC complexity on LAN with VLANs</span><span data-ja>VLAN環境でのWebRTC複雑性</span></td>
+          <td><span class="risk-level risk-high"><span data-en>High</span><span data-ja>高</span></span></td>
+          <td><span data-en>Test WebRTC early in Sprint 2 on real network. coturn TURN relay as fallback. Worst case: defer voice to post-MVP, ship with request-only flow.</span><span data-ja>スプリント2で早期に実ネットワークでWebRTCテスト。coturn TURNリレー。最悪: 音声をPost-MVPに延期、リクエストのみでリリース。</span></td>
+        </tr>
+        <tr>
+          <td><span data-en>No buffer sprint for unexpected issues</span><span data-ja>予期しない問題へのバッファスプリントなし</span></td>
+          <td><span class="risk-level risk-high"><span data-en>High</span><span data-ja>高</span></span></td>
+          <td><span data-en>Voice calls are the cut candidate if behind schedule. Core request flow (Sprint 1) is the protected scope — must ship even if Sprint 2-3 slip.</span><span data-ja>スケジュール遅延時は音声通話がカット候補。コアリクエストフロー（スプリント1）が保護スコープ — スプリント2-3が遅延しても必ずリリース。</span></td>
+        </tr>
+        <tr>
+          <td><span data-en>Scope creep from stakeholders</span><span data-ja>ステークホルダーによるスコープ拡大</span></td>
+          <td><span class="risk-level risk-med"><span data-en>Medium</span><span data-ja>中</span></span></td>
+          <td><span data-en>Strict freeze after Sprint 1 demo. All new requests → "Post-MVP" backlog. 6-week timeline leaves zero room for additions.</span><span data-ja>スプリント1デモ後に厳格なフリーズ。全新規要望 →「Post-MVP」バックログ。6週間では追加の余地なし。</span></td>
+        </tr>
+        <tr>
+          <td><span data-en>Tablet hardware not available in time</span><span data-ja>タブレットハードウェアの調達遅延</span></td>
+          <td><span class="risk-level risk-low"><span data-en>Low</span><span data-ja>低</span></span></td>
+          <td><span data-en>Order hardware in Week 1. Test with Chrome DevTools device emulation until physical tablets arrive. PWA works on any Android tablet.</span><span data-ja>第1週にハードウェア発注。実機到着までChrome DevToolsデバイスエミュレーションでテスト。PWAは任意のAndroidタブレットで動作。</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer>
+  <div class="footer-logo">Digital Concierge</div>
+  <p class="footer-sub"><span data-en>AI-Accelerated MVP — 2 Engineers × 6 Weeks</span><span data-ja>AI加速MVP — エンジニア2名 × 6週間</span></p>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.body.classList.remove('lang-en', 'lang-ja');
+    document.body.classList.add('lang-' + lang);
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-ja').classList.toggle('active', lang === 'ja');
+  }
+
+  document.getElementById('btn-en').addEventListener('click', function(e) { e.preventDefault(); setLang('en'); });
+  document.getElementById('btn-ja').addEventListener('click', function(e) { e.preventDefault(); setLang('ja'); });
+  document.getElementById('btn-en').addEventListener('touchend', function(e) { e.preventDefault(); setLang('en'); });
+  document.getElementById('btn-ja').addEventListener('touchend', function(e) { e.preventDefault(); setLang('ja'); });
+  setLang('en');
+
+  const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  // Sprint accordion
+  document.querySelectorAll('.sprint-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.closest('.sprint-block').classList.toggle('open');
+    });
+  });
+
+  if (isDesktop) {
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX - 4 + 'px';
+      cursor.style.top = mouseY - 4 + 'px';
+    });
+
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      cursorRing.style.left = ringX - 16 + 'px';
+      cursorRing.style.top = ringY - 16 + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .team-card, .ai-card, .assumption-card, .sprint-header, .compare-card').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'scale(2.5)';
+        cursorRing.style.transform = 'scale(1.4)';
+        cursorRing.style.borderColor = 'rgba(201,168,76,0.8)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'scale(1)';
+        cursorRing.style.transform = 'scale(1)';
+        cursorRing.style.borderColor = 'rgba(201,168,76,0.5)';
+      });
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), 60);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }
+</script>
+</body>
+</html>
